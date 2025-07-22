@@ -132,7 +132,7 @@ mvn clean install
 # Run the app
 mvn spring-boot:run
 ```
-👨‍💻 
+## 👨‍💻 Authors
 [Salsabila Zaman] ,[Mohammed Yasin] 
 
 ## 📃 License
