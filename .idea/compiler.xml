@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="PoV-voting-system" options="-parameters" />
+      <module name="PoV-voting-system" options="" />
     </option>
   </component>
 </project>

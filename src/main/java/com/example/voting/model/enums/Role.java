@@ -1,4 +1,4 @@
-package com.voting.model.enums;
+package com.example.voting.model.enums;
 
 public enum Role {
     VOTER,

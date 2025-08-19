@@ -1,7 +1,8 @@
-package com.voting.model;
+package com.example.voting.model;
 
-import com.voting.model.enums.Role;
+import com.example.voting.model.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -22,10 +23,12 @@ public class User {
     @Column(unique = true)
     private String nid;
 
-    private String password;
+    @NotBlank
+    private String passwordHash; // store hashed passwords if you add auth later
+
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.VOTER;
 
     private boolean isCandidate;
     private boolean isApproved;
