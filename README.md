@@ -84,7 +84,7 @@
 PoV-voting-system/
 │
 ├── src/main/java/com/voting
-│   ├── controller/
+│   ├── com.voting.controller/
 │   ├── model/ (User, Vote, Election, Block)
 │   ├── service/
 │   ├── repository/
