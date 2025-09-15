@@ -37,7 +37,7 @@ public class ApiControllers {
     @PostMapping("/users")
     public User createUser(@RequestBody CreateUserReq req) {
         User u = User.builder()
-                .username(req.getUsername())
+                .email(req.getUsername())
                 .passwordHash(req.getPassword()) // TODO: hash for real security
                 .role(req.getRole() == null ? User.Role.VOTER : req.getRole())
                 .build();

@@ -1,6 +1,5 @@
 package com.example.voting.model;
 
-import com.example.voting.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -11,7 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
-
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +30,9 @@ public class User {
 
     private boolean isCandidate;
     private boolean isApproved;
+
+    public enum Role {
+        VOTER,
+        ADMIN
+    }
 }
