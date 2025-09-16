@@ -18,10 +18,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .build();
+        http
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/h2-console/**", "/").permitAll()
+                        .anyRequest().permitAll() // Permit all for dev; restrict as needed for prod
+                )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**")
+                        .disable()
+                )
+                .headers(headers -> headers
+                        .frameOptions().sameOrigin()
+                );
+        return http.build();
     }
 
     @Bean

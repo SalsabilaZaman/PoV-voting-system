@@ -1,6 +1,8 @@
 package com.example.voting.controller;
 
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.example.voting.blockchain.BlockchainService;
 import com.example.voting.model.Candidate;
 import com.example.voting.model.Election;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @RestController
@@ -35,12 +38,36 @@ public class ApiControllers {
     // ===== Users (minimal; add auth later if needed) =====
     @PostMapping("/users")
     public User createUser(@RequestBody CreateUserReq req) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         User u = User.builder()
-                .email(req.getUsername())
-                .passwordHash(req.getPassword()) // TODO: hash for real security
+                .email(req.getEmail())
+                .passwordHash(encoder.encode(req.getPassword()))
+                .nid(req.getNid())
                 .role(req.getRole() == null ? User.Role.VOTER : req.getRole())
                 .build();
         return userRepository.save(u);
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<?> signIn(@RequestBody SignInRequest req) {
+        Optional<User> userOpt = userRepository.findByEmail(req.getEmail());
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+        }
+        User user = userOpt.get();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (!encoder.matches(req.getPassword(), user.getPasswordHash())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+        Map<String, Object> userInfo = Map.of(
+                "id", user.getId(),
+                "email", user.getEmail(),
+                "nid", user.getNid(),
+                "role", user.getRole(),
+                "isCandidate", user.isCandidate(),
+                "isApproved", user.isApproved()
+        );
+        return ResponseEntity.ok(userInfo);
     }
 
 
@@ -94,8 +121,9 @@ public class ApiControllers {
     // ===== DTOs =====
     @Data
     public static class CreateUserReq {
-        @NotBlank private String username;
+        @NotBlank private String email;
         @NotBlank private String password;
+        @NotBlank private String nid;
         private User.Role role;
     }
 
@@ -120,5 +148,11 @@ public class ApiControllers {
         private Long userId;
         private Long electionId;
         private Long candidateId;
+    }
+
+    @Data
+    public static class SignInRequest {
+        private String email;
+        private String password;
     }
 }
