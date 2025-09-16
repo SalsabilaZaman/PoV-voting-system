@@ -9,6 +9,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String index(Model model) {
+        System.out.println("Accessed Home Page");
         model.addAttribute("pageTitle", "Home - Blockchain Voting");
         return "index";
     }

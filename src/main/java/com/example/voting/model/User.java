@@ -25,6 +25,7 @@ public class User {
     private String passwordHash; // store hashed passwords if you add auth later
 
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     private Role role = Role.VOTER;
 
