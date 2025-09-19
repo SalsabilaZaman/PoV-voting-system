@@ -26,8 +26,5 @@ public class Election {
     @Builder.Default
     private List<Candidate> candidates = new ArrayList<>();
 
-    @OneToMany(mappedBy = "election", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<User> voters = new ArrayList<>();
 
 }

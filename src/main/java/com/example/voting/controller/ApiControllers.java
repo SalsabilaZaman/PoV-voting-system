@@ -11,6 +11,7 @@ import com.example.voting.model.Vote;
 import com.example.voting.repository.UserRepository;
 import com.example.voting.service.ElectionService;
 import com.example.voting.service.VoteService;
+import com.example.voting.util.JwtUtil;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -25,22 +26,26 @@ import java.util.Optional;
 // @RequestMapping("/api")
 @RequiredArgsConstructor
 @CrossOrigin
-
 public class ApiControllers {
     private final ElectionService electionService;
     private final VoteService voteService;
     private final UserRepository userRepository;
     private final BlockchainService blockchainService;
+    private final JwtUtil jwtUtil;
 
     // ===== Users (minimal; add auth later if needed) =====
     @PostMapping("/users")
     public User createUser(@RequestBody CreateUserReq req) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        User.Role role = req.getRole();
+        if (role == null) {
+            role = User.Role.VOTER;
+        }
         User u = User.builder()
                 .email(req.getEmail())
                 .passwordHash(encoder.encode(req.getPassword()))
                 .nid(req.getNid())
-                .role(req.getRole() == null ? User.Role.VOTER : req.getRole())
+                .role(role)
                 .build();
         return userRepository.save(u);
     }
@@ -56,14 +61,19 @@ public class ApiControllers {
         if (!encoder.matches(req.getPassword(), user.getPasswordHash())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         Map<String, Object> userInfo = Map.of(
                 "id", user.getId(),
                 "email", user.getEmail(),
                 "nid", user.getNid(),
                 "role", user.getRole(),
                 "isCandidate", user.isCandidate(),
-                "isApproved", user.isApproved());
-        return ResponseEntity.ok(userInfo);
+                "isApproved", user.isApproved()
+        );
+        return ResponseEntity.ok(Map.of(
+                "token", token,
+                "user", userInfo
+        ));
     }
 
     @GetMapping("/users")
