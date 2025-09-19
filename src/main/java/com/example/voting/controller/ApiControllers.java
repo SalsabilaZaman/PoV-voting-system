@@ -4,12 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.example.voting.blockchain.BlockchainService;
-import com.example.voting.model.Candidate;
-import com.example.voting.model.Election;
 import com.example.voting.model.User;
 import com.example.voting.model.Vote;
 import com.example.voting.repository.UserRepository;
-import com.example.voting.service.ElectionService;
 import com.example.voting.service.VoteService;
 import com.example.voting.util.JwtUtil;
 import jakarta.validation.constraints.NotBlank;
@@ -27,7 +24,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @CrossOrigin
 public class ApiControllers {
-    private final ElectionService electionService;
     private final VoteService voteService;
     private final UserRepository userRepository;
     private final BlockchainService blockchainService;
@@ -81,27 +77,6 @@ public class ApiControllers {
         return userRepository.findAll();
     }
 
-    // ===== Elections & Candidates =====
-    @PostMapping("/elections")
-    public Election createElection(@RequestBody CreateElectionReq req) {
-        return electionService.createElection(req.getName(), req.getStartTime(), req.getEndTime());
-    }
-
-    @GetMapping("/elections")
-    public List<Election> listElections() {
-        return electionService.listElections();
-    }
-
-    @PostMapping("/elections/{electionId}/candidates")
-    public Candidate addCandidate(@PathVariable Long electionId, @RequestBody AddCandidateReq req) {
-        return electionService.addCandidate(electionId, req.getName(), req.getAffiliation());
-    }
-
-    @GetMapping("/elections/{electionId}/candidates")
-    public List<Candidate> listCandidates(@PathVariable Long electionId) {
-        return electionService.listCandidates(electionId);
-    }
-
     // ===== Voting =====
     @PostMapping("/votes")
     public Vote castVote(@RequestBody CastVoteReq req) {
@@ -129,19 +104,6 @@ public class ApiControllers {
         @NotBlank
         private String nid;
         private User.Role role;
-    }
-
-    @Data
-    public static class CreateElectionReq {
-        private String name;
-        private LocalDateTime startTime;
-        private LocalDateTime endTime;
-    }
-
-    @Data
-    public static class AddCandidateReq {
-        private String name;
-        private String affiliation;
     }
 
     @Data

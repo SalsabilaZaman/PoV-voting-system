@@ -35,4 +35,20 @@ public class ElectionService {
 
     public List<Election> listElections() { return electionRepository.findAll(); }
     public List<Candidate> listCandidates(Long electionId) { return candidateRepository.findByElectionId(electionId); }
+
+
+    public Election updateElection(Long id, String name, LocalDateTime start, LocalDateTime end) {
+        Election election = electionRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Election not found"));
+        if (name != null) election.setName(name);
+        if (start != null) election.setStartTime(start);
+        if (end != null) election.setEndTime(end);
+        return electionRepository.save(election);
+    }
+
+    public void deleteElection(Long id) {
+        if (!electionRepository.existsById(id)) {
+            throw new IllegalArgumentException("Election not found");
+        }
+        electionRepository.deleteById(id);
+    }
 }

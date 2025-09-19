@@ -1,6 +1,7 @@
 package com.example.voting.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,5 +21,6 @@ public class Candidate {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private Election election;
 }

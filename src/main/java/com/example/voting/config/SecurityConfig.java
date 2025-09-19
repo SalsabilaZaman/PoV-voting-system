@@ -27,6 +27,7 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/h2-console/**", "/", "/signin", "/users").permitAll()
+                .requestMatchers("/elections", "/elections/", "/elections/{id}", "/elections/{electionId}/candidates", "/elections/{electionId}/candidates/").permitAll()
                 .requestMatchers("/elections/**", "/votes/**").hasAnyRole("VOTER", "ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
