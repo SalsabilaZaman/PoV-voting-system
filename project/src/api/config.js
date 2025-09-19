@@ -1,6 +1,6 @@
 // API Configuration
 // Update this BASE_URL to match your Spring Boot backend
-export const BASE_URL = 'http://localhost:8080/api';
+export const BASE_URL = '/api';
 
 // Common fetch wrapper with error handling
 export const apiRequest = async (url, options = {}) => {

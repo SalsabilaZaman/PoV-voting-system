@@ -16,15 +16,13 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
 @RestController
-@RequestMapping("/api")
+// @RequestMapping("/api")
 @RequiredArgsConstructor
 @CrossOrigin
 
@@ -33,7 +31,6 @@ public class ApiControllers {
     private final VoteService voteService;
     private final UserRepository userRepository;
     private final BlockchainService blockchainService;
-
 
     // ===== Users (minimal; add auth later if needed) =====
     @PostMapping("/users")
@@ -65,15 +62,14 @@ public class ApiControllers {
                 "nid", user.getNid(),
                 "role", user.getRole(),
                 "isCandidate", user.isCandidate(),
-                "isApproved", user.isApproved()
-        );
+                "isApproved", user.isApproved());
         return ResponseEntity.ok(userInfo);
     }
 
-
     @GetMapping("/users")
-    public List<User> listUsers() { return userRepository.findAll(); }
-
+    public List<User> listUsers() {
+        return userRepository.findAll();
+    }
 
     // ===== Elections & Candidates =====
     @PostMapping("/elections")
@@ -81,22 +77,20 @@ public class ApiControllers {
         return electionService.createElection(req.getName(), req.getStartTime(), req.getEndTime());
     }
 
-
     @GetMapping("/elections")
-    public List<Election> listElections() { return electionService.listElections(); }
-
+    public List<Election> listElections() {
+        return electionService.listElections();
+    }
 
     @PostMapping("/elections/{electionId}/candidates")
     public Candidate addCandidate(@PathVariable Long electionId, @RequestBody AddCandidateReq req) {
         return electionService.addCandidate(electionId, req.getName(), req.getAffiliation());
     }
 
-
     @GetMapping("/elections/{electionId}/candidates")
     public List<Candidate> listCandidates(@PathVariable Long electionId) {
         return electionService.listCandidates(electionId);
     }
-
 
     // ===== Voting =====
     @PostMapping("/votes")
@@ -104,12 +98,10 @@ public class ApiControllers {
         return voteService.castVote(req.getUserId(), req.getElectionId(), req.getCandidateId());
     }
 
-
     @GetMapping("/results/{electionId}")
     public Map<String, Integer> getResults(@PathVariable Long electionId) {
         return voteService.computeResults(electionId);
     }
-
 
     // ===== Blockchain =====
     @GetMapping("/blockchain/is-valid")
@@ -117,16 +109,17 @@ public class ApiControllers {
         return Map.of("valid", blockchainService.isValid(), "length", blockchainService.getChain().size());
     }
 
-
     // ===== DTOs =====
     @Data
     public static class CreateUserReq {
-        @NotBlank private String email;
-        @NotBlank private String password;
-        @NotBlank private String nid;
+        @NotBlank
+        private String email;
+        @NotBlank
+        private String password;
+        @NotBlank
+        private String nid;
         private User.Role role;
     }
-
 
     @Data
     public static class CreateElectionReq {
@@ -135,13 +128,11 @@ public class ApiControllers {
         private LocalDateTime endTime;
     }
 
-
     @Data
     public static class AddCandidateReq {
         private String name;
         private String affiliation;
     }
-
 
     @Data
     public static class CastVoteReq {

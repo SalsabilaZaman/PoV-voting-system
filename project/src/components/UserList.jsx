@@ -16,7 +16,7 @@ const UserList = ({ users, loading }) => {
         <Users className="h-5 w-5 mr-2" />
         All Users ({users.length})
       </h3>
-      
+
       {users.length === 0 ? (
         <p className="text-gray-500">No users created yet.</p>
       ) : (
@@ -33,13 +33,12 @@ const UserList = ({ users, loading }) => {
               {users.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-4 py-2 text-sm text-gray-900">{user.id}</td>
-                  <td className="px-4 py-2 text-sm text-gray-900">{user.username}</td>
+                  <td className="px-4 py-2 text-sm text-gray-900">{user.email}</td>
                   <td className="px-4 py-2 text-sm">
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                      user.role === 'ADMIN' 
-                        ? 'bg-red-100 text-red-800' 
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${user.role === 'ADMIN'
+                        ? 'bg-red-100 text-red-800'
                         : 'bg-green-100 text-green-800'
-                    }`}>
+                      }`}>
                       <Shield className="h-3 w-3 mr-1" />
                       {user.role}
                     </span>
