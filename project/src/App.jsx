@@ -5,9 +5,10 @@ import ElectionPage from './pages/ElectionPage.jsx';
 import VotePage from './pages/VotePage.jsx';
 import ResultsPage from './pages/ResultsPage.jsx';
 import BlockchainStatusPage from './pages/BlockchainStatusPage.jsx';
+import SignInPage from './pages/SignInPage.jsx';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('users');
+  const [currentPage, setCurrentPage] = useState('SignIn'); // Default to SignIn page
 
   const renderPage = () => {
     switch (currentPage) {
@@ -22,7 +23,7 @@ function App() {
       case 'blockchain':
         return <BlockchainStatusPage />;
       default:
-        return <UserPage />;
+        return <SignInPage />;
     }
   };
 

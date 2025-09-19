@@ -23,11 +23,13 @@ import java.util.Optional;
 // @RequestMapping("/api")
 @RequiredArgsConstructor
 @CrossOrigin
+
 public class ApiControllers {
     private final VoteService voteService;
     private final UserRepository userRepository;
     private final BlockchainService blockchainService;
     private final JwtUtil jwtUtil;
+    private final com.example.voting.service.UserService userService;
 
     // ===== Users (minimal; add auth later if needed) =====
     @PostMapping("/users")
@@ -48,28 +50,45 @@ public class ApiControllers {
 
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody SignInRequest req) {
-        Optional<User> userOpt = userRepository.findByEmail(req.getEmail());
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+        try {
+            User user = userService.signIn(req.getEmail(), req.getPassword());
+            String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+            Map<String, Object> userInfo = Map.of(
+                    "id", user.getId(),
+                    "email", user.getEmail(),
+                    "nid", user.getNid(),
+                    "role", user.getRole(),
+                    "isCandidate", user.isCandidate(),
+                    "isApproved", user.isApproved());
+            return ResponseEntity.ok(Map.of(
+                    "token", token,
+                    "user", userInfo));
+        } catch (org.springframework.security.core.userdetails.UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
-        User user = userOpt.get();
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        if (!encoder.matches(req.getPassword(), user.getPasswordHash())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
-        Map<String, Object> userInfo = Map.of(
-                "id", user.getId(),
-                "email", user.getEmail(),
-                "nid", user.getNid(),
-                "role", user.getRole(),
-                "isCandidate", user.isCandidate(),
-                "isApproved", user.isApproved()
-        );
-        return ResponseEntity.ok(Map.of(
-                "token", token,
-                "user", userInfo
-        ));
+        // Optional<User> userOpt = userRepository.findByEmail(req.getEmail());
+        // if (userOpt.isEmpty()) {
+        // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+        // }
+        // User user = userOpt.get();
+        // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        // if (!encoder.matches(req.getPassword(), user.getPasswordHash())) {
+        // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid
+        // credentials");
+        // }
+        // String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+        // Map<String, Object> userInfo = Map.of(
+        // "id", user.getId(),
+        // "email", user.getEmail(),
+        // "nid", user.getNid(),
+        // "role", user.getRole(),
+        // "isCandidate", user.isCandidate(),
+        // "isApproved", user.isApproved()
+        // );
+        // return ResponseEntity.ok(Map.of(
+        // "token", token,
+        // "user", userInfo
+        // ));
     }
 
     @GetMapping("/users")

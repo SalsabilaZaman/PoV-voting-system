@@ -23,4 +23,14 @@ public class UserService implements UserDetailsService {
                 .roles(user.getRole().name())
                 .build();
     }
+
+    public User signIn(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+        org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
+        if (!encoder.matches(password, user.getPasswordHash())) {
+            throw new UsernameNotFoundException("Invalid credentials");
+        }
+        return user;
+    }
 }
