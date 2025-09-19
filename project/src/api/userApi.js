@@ -8,6 +8,13 @@ export const createUser = async (userData) => {
   });
 };
 
+export const Signup = async (userData) => {
+  return apiRequest('/signup', {
+    method: 'POST',
+    body: JSON.stringify(userData),
+  });
+};
+
 // Get all users
 export const getAllUsers = async () => {
   return apiRequest('/users');

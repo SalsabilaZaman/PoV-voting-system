@@ -58,8 +58,7 @@ public class ApiControllers {
                     "email", user.getEmail(),
                     "nid", user.getNid(),
                     "role", user.getRole(),
-                    "isCandidate", user.isCandidate(),
-                    "isApproved", user.isApproved());
+                    "isCandidate", user.isCandidate());
             return ResponseEntity.ok(Map.of(
                     "token", token,
                     "user", userInfo));
