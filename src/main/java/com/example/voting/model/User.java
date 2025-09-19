@@ -24,13 +24,26 @@ public class User {
     @NotBlank
     private String passwordHash; // store hashed passwords if you add auth later
 
-
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Role role = Role.VOTER;
 
     private boolean isCandidate;
-    private boolean isApproved;
+
+    @NotBlank
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
+
+    @NotBlank
+    private String birthdate; // Store as String for simplicity, or use LocalDate if preferred
+
+    @NotBlank
+    private String motherName;
+
+    @NotBlank
+    private String fatherName;
 
     public enum Role {
         VOTER,
