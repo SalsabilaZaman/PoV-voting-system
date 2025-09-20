@@ -9,7 +9,7 @@ import SignInPage from './pages/SignInPage.jsx';
 import SignupPage from './pages/SignupPage.jsx';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('SignUp'); // Default to SignIn page
+  const [currentPage, setCurrentPage] = useState('SingIn'); // Default to SignIn page
 
   const renderPage = () => {
     switch (currentPage) {

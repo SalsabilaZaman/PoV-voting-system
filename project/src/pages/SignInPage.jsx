@@ -1,4 +1,6 @@
+
 import React, { useState } from 'react';
+import { signin } from '../api/userApi.js';
 
 function SignInPage({ onSignIn }) {
     const [email, setEmail] = useState('');
@@ -11,22 +13,10 @@ function SignInPage({ onSignIn }) {
         setError('');
         setLoading(true);
         try {
-            const res = await fetch('/signin', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            if (!res.ok) {
-                const msg = await res.text();
-                setError(msg || 'Sign in failed');
-                setLoading(false);
-                return;
-            }
-            const data = await res.json();
+            const data = await signin(email, password);
             if (onSignIn) onSignIn(data);
-            // Optionally, store token in localStorage: localStorage.setItem('token', data.token);
         } catch (err) {
-            setError('Network error');
+            setError(err.message || 'Sign in failed');
         } finally {
             setLoading(false);
         }

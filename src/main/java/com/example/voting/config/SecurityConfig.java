@@ -21,29 +21,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .headers(headers -> headers
-                .frameOptions().sameOrigin()
-            )
-            .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/h2-console/**", "/", "/signin", "/users").permitAll()
-                .requestMatchers("/elections", "/elections/", "/elections/{id}", "/elections/{electionId}/candidates", "/elections/{electionId}/candidates/").permitAll()
-                .requestMatchers("/elections/**", "/votes/**").hasAnyRole("VOTER", "ADMIN")
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers
+                        .frameOptions().sameOrigin())
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/h2-console/**", "/", "/signin", "/users", "/signup").permitAll()
+                        .requestMatchers("/elections", "/elections/", "/elections/{id}",
+                                "/elections/{electionId}/candidates", "/elections/{electionId}/candidates/")
+                        .permitAll()
+                        .requestMatchers("/elections/**", "/votes/**").hasAnyRole("VOTER", "ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
-
-    @Bean
-    public AuthenticationManager authManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
 }
